@@ -35,8 +35,7 @@ endif
 
 # add Show/hide NVP6134(C) function (2016-09-10, sat)
 EXTRA_CFLAGS += -D__DEC_HIDE_SHOW_FUNCTION
-# use new eq table
-EXTRA_CFLAGS += -D__ADJUST_NEW_EQ_TABLE_ABOUT_CHD
+
 default:
 	@make -C $(LINUX_ROOT) M=$(PWD) modules 
 ifeq ($(HIARCH),hi3520D)

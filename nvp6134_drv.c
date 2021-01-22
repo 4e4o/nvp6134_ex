@@ -87,7 +87,7 @@ static struct i2c_client* nvp6134_client;
 static struct himedia_device s_stNvp6134Device;
 #endif
 
-#define DRIVER_VER "17.03.03.01"
+#define DRIVER_VER "17.03.20.01"
 
 #ifdef HI_I2C   
 unsigned char __I2CReadByte8(unsigned char devaddress, unsigned char address)
@@ -567,7 +567,8 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			else if(ch_mode_status[g_coax_ch] == NVP6134_VI_EXC_1080P)
 			{
 				//for(i=0;i<AF_CNT;i++)
-					nvp6134_coax_command(g_coax_ch, EXC_CMD_FOCUS_FAR);
+					//nvp6134_coax_command(g_coax_ch, EXC_CMD_FOCUS_FAR);
+				nvp6134_coax_command(g_coax_ch, EXC_CMD_OSD_ENTER);	
 				//msleep(35);
 				//nvp6134_coax_command(g_coax_ch, EXC_CMD_ZOOM_STOP);
 			}

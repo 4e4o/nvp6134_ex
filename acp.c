@@ -764,7 +764,7 @@ int acp_isp_write_eqstage( unsigned char ch, unsigned char stage, unsigned char 
 {
 	nvp6134_acp_rw_data_extention acpdata;
 
-	if(stage <= 0)
+	if(stage <= 1)
 		return -1;
 
 	/* communicate each and set value */
@@ -808,7 +808,7 @@ int acp_isp_write_communcation( unsigned char ch, unsigned char stage, unsigned 
 	unsigned char data1, data2, data3;
 	nvp6134_acp_rw_data_extention acpdata;
 
-	if(stage <= 0)
+	if(stage <= 1)
 		return -1;
 
 	if( vidmode == NVP6134_VI_3M_NRT || vidmode == NVP6134_VI_3M ||

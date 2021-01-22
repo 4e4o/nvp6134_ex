@@ -336,12 +336,12 @@ unsigned char nvp6134_vfmt_convert(unsigned char vdsts, unsigned char g_ck_fmt)
 	{
 		case 0x00:  ret = 0x01;	break;  //cvbs ntsc
 		case 0x10:  ret = 0x02; break;	//cvbs pal
-		case 0x20:	ret = 0x04; break;	//720p ntsc
+		case 0x20:  ret = 0x04; break;	//720p ntsc
  		case 0x21:  ret = 0x08; break;	//720p pal
 		case 0x22:  ret = 0x51; break;	//720P@RT ntsc
 		case 0x23:  ret = 0x52; break;	//720P@RT pal
 		case 0x30:  ret = 0x40;	break;	//1080p ntsc
-		case 0x31:	ret = 0x80;	break;	//1080p pal
+		case 0x31: ret = 0x80;	break;	//1080p pal
 		case 0x2B:  ret = 0x11; break;  //HD exc  @ 30P
 		case 0x2C:  ret = 0x12; break;  //HD EXC  @ 25P
 		case 0x25:  ret = 0x31; break;  //HD EXT  @ 30A
@@ -443,7 +443,7 @@ unsigned char video_fmt_debounce(unsigned char ch, unsigned char keep_fmt, unsig
 			/* 20:AHD@30p, 2B:CHD@30p */
 				else
 				{
-				if(acc_gain_val < 2010)
+					if(acc_gain_val < 2010)
 					{
 						vfmt = keep_fmt;
 					printk(">>>>> DRV[%s:%d] CH:%d, AHD/CVI 720p Distinguish. acc gain&Y_slp is OKAY[acc:%d,yp:%d,ym:%d]\n", \
@@ -665,10 +665,10 @@ unsigned int video_fmt_det(nvp6134_input_videofmt *pvideofmt)
 						case 0x21 :	{ pre_fmt = 0x07; pre_adc_clk = 0x0; pre_pre_clk = 0x00; } break;
 						case 0x2B :	{ pre_fmt = 0x06; pre_adc_clk = 0x0; pre_pre_clk = 0x00; } break;
 						case 0x2C :	{ pre_fmt = 0x07; pre_adc_clk = 0x0; pre_pre_clk = 0x00; } break;
-						case 0x30 :	{ pre_fmt = 0x02; pre_adc_clk = 0x4; pre_pre_clk = 0x55; } break;
-						case 0x31 :	{ pre_fmt = 0x03; pre_adc_clk = 0x4; pre_pre_clk = 0x55; } break;
-						case 0x35 :	{ pre_fmt = 0x02; pre_adc_clk = 0x4; pre_pre_clk = 0x55; } break;
-						case 0x36 :	{ pre_fmt = 0x03; pre_adc_clk = 0x4; pre_pre_clk = 0x55; } break;
+						case 0x30 :	{ pre_fmt = 0x02; pre_adc_clk = 0x4; pre_pre_clk = 0xe5; } break;
+						case 0x31 :	{ pre_fmt = 0x03; pre_adc_clk = 0x4; pre_pre_clk = 0xe5; } break;
+						case 0x35 :	{ pre_fmt = 0x02; pre_adc_clk = 0x4; pre_pre_clk = 0xe5; } break;
+						case 0x36 :	{ pre_fmt = 0x03; pre_adc_clk = 0x4; pre_pre_clk = 0xe5; } break;
 						default   : pre_fmt = 0x03; break;
 					}
 				
@@ -688,7 +688,7 @@ unsigned int video_fmt_det(nvp6134_input_videofmt *pvideofmt)
 			            		gpio_i2c_write(nvp6134_iic_addr[i/4], 0x80+((i%4)*0x20), 0xa4);	//Digital EQ0
 						gpio_i2c_write(nvp6134_iic_addr[i/4], 0x81+((i%4)*0x20), 0x00);	//Digital EQ1
 						gpio_i2c_write(nvp6134_iic_addr[i/4], 0xFF, 0x05+(i%4));
-			            		gpio_i2c_write(nvp6134_iic_addr[i/4], 0x27, 0x08);		// ACC reference
+			            		gpio_i2c_write(nvp6134_iic_addr[i/4], 0x27, 0x10);		// ACC reference
 			            		gpio_i2c_write(nvp6134_iic_addr[i/4], 0x58, 0x03);  	// Analog EQ
 
 						printk(">>>>> DRV[%s:%d] CH:%d, 720P Gain control for pre detection. Current fmt[%x]\n", \
@@ -1034,7 +1034,7 @@ unsigned int nvp6134_getvideoloss(void)
 				}
 				else if(s_slice_cnt%3 == 1)
 				{
-					gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x08, 0x58);
+					gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x08, 0x40);
 				}		
 				else
 				{
@@ -2829,7 +2829,7 @@ void nvp6134_setchn_exta_720p(const unsigned char ch, const unsigned char vfmt)
 
 	//each format basic clk
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0xFF, 0x01);
-	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x84+ch%4,vfmt==PAL?0x55:0x55);
+	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x84+ch%4,vfmt==PAL?0xe5:0xe5);
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x8c+ch%4,vfmt==PAL?0x04:0x04);
 
 	//each format standard setting
@@ -3219,7 +3219,7 @@ void nvp6134_setchn_exc_720p5060(const unsigned char ch, const unsigned char vfm
 
 	//each format basic clk
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0xFF, 0x01);
-	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x84+ch%4,vfmt==PAL?0x55:0x55);
+	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x84+ch%4,vfmt==PAL?0xf5:0xf5);
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x8c+ch%4,vfmt==PAL?0x44:0x44);
 
 	//each format standard setting( by romeo(2016-06-24)
@@ -3612,7 +3612,7 @@ void nvp6134_setchn_exc_1080p2530(const unsigned char ch, const unsigned char vf
 
 	//each format basic clk
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0xFF, 0x01);					
-	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x84+ch%4,vfmt==PAL?0x55:0x55);		
+	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x84+ch%4,vfmt==PAL?0xe5:0xe5);		
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x8c+ch%4,vfmt==PAL?0x44:0x44);
 
 	//each format standard setting 
