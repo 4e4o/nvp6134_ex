@@ -975,7 +975,11 @@ unsigned int video_fmt_det(nvp6134_input_videofmt *pvideofmt)
 					{
 						printk(">>>>> DRV[%s:%d] CH:%d, g_eq_set_done NOT YET. can't debounce format. g_eq_set_done[%x]\n", \
 								__func__, __LINE__, i,g_eq_set_done);
+					}
 				}
+				else
+				{
+					pvideofmt->getvideofmt[i] = nvp6134_vfmt_convert(reg_vfmt_F0, reg_vfmt_F2);
 				}
 				printk(">>>>> DRV[%s:%d] CH:%d, already set no 0xFF . fmt[keep:%x,get:%x],  pvideofmt[trans:%x]\n", \
 						__func__, __LINE__, i,s_keep_fmt[i],reg_vfmt_F0,pvideofmt->getvideofmt[i] );
