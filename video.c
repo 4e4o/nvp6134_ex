@@ -1420,34 +1420,68 @@ int nvp6134_set_portmode(const unsigned char chip, const unsigned char portsel, 
 		case NVP6134_OUTMODE_2MUX_FHD_X:	
 			/*HD,1920H,FHD-X 2MUX任意混合,数据148.5MHz,时钟148.5MHz,单沿采样	
 			SOC VI端通过丢点，实现1920H->960H  */
+            // bank 0 select
 			gpio_i2c_write(chipaddr, 0xFF, 0x00);
+            // page 56 registers to control channel id   --------------------------------------------------
+            // chid_vin3 = 2 wtf ???
+            // TODO don't understand this
 			gpio_i2c_write(chipaddr, 0x56, 0x10);
+            // 7.1 video format setting register   --------------------------------------------------------
+            // 0x81 for channel 1 get video format
 			tmp = gpio_i2c_read(chipaddr, 0x81)&0x0F;
+            // if channel 1 mode == ahd_1080_30 or ahd_1080_25
 			if(((tmp) == 0x02) || ((tmp) == 0x03))
 				reg1 |= 0x08;
 			else
 				reg1 &= 0xF0;
 			tmp = gpio_i2c_read(chipaddr, 0x82)&0x0F;
+            // if channel 2 mode == ahd_1080_30 or ahd_1080_25
 			if((tmp == 0x02) || (tmp == 0x03))
 				reg1 |= 0x80;
 			else
 				reg1 &= 0x0F;
 			tmp = gpio_i2c_read(chipaddr, 0x83)&0x0F;
+            // if channel 3 mode == ahd_1080_30 or ahd_1080_25
 			if(((tmp) == 0x02) || ((tmp) == 0x03))
 				reg2 |= 0x08;
 			else
 				reg2 &= 0xF0;
 			tmp = gpio_i2c_read(chipaddr, 0x84)&0x0F;
+            // if channel 4 mode == ahd_1080_30 or ahd_1080_25
 			if((tmp == 0x02) || (tmp == 0x03))
 				reg2 |= 0x80;
 			else
 				reg2 &= 0x0F;
+            // select bank 1
 			gpio_i2c_write(chipaddr, 0xFF, 0x01);
+            // 2.10.2 page 21   --------------------------------------------------------------
+            // VPORT_1_SEQX
+            // select the type of output video signal through video output port 1
+            // for example portsel = 1, 0xC2
+            // for channels 1 or 2
+            // chid selects 1 or 2 channel to use
 			gpio_i2c_write(chipaddr, 0xC0+portsel*2, chid==0?(0x10|reg1):(0x32|reg2));
+            // 2.10.3 page 22
+            // VPORT_1_SEQX
+            // this register used in 4mux mode, why it is here ?
+            // TODO don't understand this
+            // for portsel = 1, 0xC3
+            // for channels 3 or 4
 			gpio_i2c_write(chipaddr, 0xC1+portsel*2, chid==0?(0x10|reg1):(0x32|reg2));
+            // 0xC8 for portsel = 1   --------------------------------------------------------
+            // 2.10.2 page 21
+            // vport_1_ch_out_sel, select vout port generated data form
+            // read old value first coz we can read only bytes, but one byte contains values for 2 vout ports
 			tmp = gpio_i2c_read(chipaddr, 0xC8+(portsel/2)) & (portsel%2?0x0F:0xF0);
+            // modify associated portsel to value 0x2 - 2mux mode
 			tmp |= (portsel%2?0x20:0x02);
+            // set new mode
 			gpio_i2c_write(chipaddr, 0xC8+(portsel/2), tmp);
+            // for portsel = 1 0xCD   --------------------------------------------------------
+            // 6.1.11 VPORT_1_OCLK_SEL + VPORT_1_OCLK_DLY_SEL
+            // page 79 register to select video output clock
+            // 0x46 = ?
+            // TODO don't understand this
 			gpio_i2c_write(chipaddr, 0xCC+portsel, 0x46); 				
 			break;	
 		case NVP6134_OUTMODE_1MUX_BT1120S:	
