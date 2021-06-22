@@ -191,6 +191,8 @@ void __I2CWriteByte8(unsigned char devaddress, unsigned char address, unsigned c
 #define IOC_VDEC_SET_MOTION_DISPLAY		0x45
 #define IOC_VDEC_SET_MOTION_SENS		0x46
 
+#define IOC_VDEC_VIDEO_FMT_RESET		0x47
+
 #define IOC_AUDIO_SET_CHNNUM            0x80
 #define IOC_AUDIO_SET_SAMPLE_RATE       0x81
 #define IOC_AUDIO_SET_BITWIDTH          0x82

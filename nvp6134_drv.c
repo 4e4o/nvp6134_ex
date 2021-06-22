@@ -631,6 +631,11 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			nvp6134_motion_sensitivity(sens);
 			up(&nvp6134_lock);
 			break;
+		case IOC_VDEC_VIDEO_FMT_RESET:
+			down(&nvp6134_lock);
+			video_fmt_det_reset();
+			up(&nvp6134_lock);
+			break;
 		default:
             //printk("drv:invalid nc decoder ioctl cmd[%x]\n", cmd);
 			break;

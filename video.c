@@ -999,6 +999,28 @@ unsigned int video_fmt_det(nvp6134_input_videofmt *pvideofmt)
 
 unsigned char s_slice_cnt = 0;
 
+void video_fmt_det_reset(void)
+{
+	memset(&ch_mode_status, 0xff, sizeof(ch_mode_status));
+	memset(&ch_vfmt_status, 0xff, sizeof(ch_vfmt_status));
+	memset(&g_ch_video_fmt, 0xff, sizeof(g_ch_video_fmt));
+
+	memset(&s_fmt_dbnc_cnt, 0x00, sizeof(s_fmt_dbnc_cnt));
+	memset(&s_fmt_dbnc_buf0, 0x00, sizeof(s_fmt_dbnc_buf0));
+	memset(&s_fmt_dbnc_buf1, 0x00, sizeof(s_fmt_dbnc_buf1));
+	memset(&s_fmt_dbnc_buf2, 0x00, sizeof(s_fmt_dbnc_buf2));
+
+	memset(&s_keep_fmt, 0xff, sizeof(s_keep_fmt));
+	memset(&s_keep_sync_width, 0x00, sizeof(s_keep_sync_width));
+
+	s_fmt_set_done = 0;
+	g_eq_set_done = 0;
+	s_slice_cnt = 0;
+	g_vloss=0xFFFF;
+
+	printk("video_fmt_det_reset\n");
+}
+
 unsigned int nvp6134_getvideoloss(void)
 {
 	unsigned int vloss=0, i, ch;

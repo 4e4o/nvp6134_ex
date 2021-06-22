@@ -162,6 +162,7 @@ void nvp6134_setchn_ahd_8M_NRT(const unsigned char ch, const unsigned char vfmt)
 void nvp6134_setchn_ahd_UHDX(const unsigned char ch, const unsigned char vfmt);
 void nvp6134_setchn_ext_bsf(const unsigned char ch, const unsigned char vfmt);
 
+void video_fmt_det_reset(void);
 unsigned int  video_fmt_det(nvp6134_input_videofmt *pvideofmt);
 unsigned char video_fmt_debounce(unsigned char ch, unsigned char keep_fmt, unsigned int keep_sync_width);
 unsigned int nvp6134_getvideoloss(void);
