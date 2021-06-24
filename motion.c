@@ -17,6 +17,8 @@
 
 #include "common.h"
 #include "video.h"
+#include "motion.h"
+
 extern unsigned int nvp6134_iic_addr[4];
 extern unsigned int nvp6134_cnt;
 
@@ -52,7 +54,7 @@ void nvp6134_motion_init(unsigned char ch, unsigned char onoff)
 unsigned int nvp6134_get_motion_ch(void)
 {
 	int i;
-	unsigned int motion=0xFFFF;
+	unsigned int motion=0;
 	
 	for(i=0;i<nvp6134_cnt;i++)
 	{
@@ -83,8 +85,11 @@ void nvp6134_motion_display(unsigned char ch, unsigned char onoff)
 	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x00+(ch%4)*0x07, ch_disp);
 }
 
-void nvp6134_motion_sensitivity(unsigned int sens[16])
+void nvp6134_motion_sensitivity(nvp6134_motion_sens *sens)
 {
+	//0x01+(ch%4)*0x07  motion时域敏感度						default 0x60
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0xFF, 0x02);
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0x01 + (sens->ch % 4) * 0x07, sens->sens);
 }
 
 /*******************************************************************************
@@ -94,13 +99,14 @@ motion block setting...192个块，每个寄存器8个bit，每个bit控制1个block.
 0x70~0x87  ch3
 0x88~0x9F  ch4
 *******************************************************************************/
-void nvp6134_motion_area_mask(unsigned char ch, unsigned int *blockset)
+void nvp6134_motion_area_mask(nvp6134_motion_area* ma)
 {
 	int bcnt;
-	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0xFF, 0x02);
-	for(bcnt=0;bcnt<0x18;bcnt++)
-	{
-		gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x40+(ch%4)*0x18, blockset[bcnt]);
+
+	gpio_i2c_write(nvp6134_iic_addr[ma->ch / 4], 0xFF, 0x02);
+
+	for(bcnt = 0 ; bcnt < sizeof(ma->blockset) ; bcnt++) {
+		gpio_i2c_write(nvp6134_iic_addr[ma->ch / 4], 0x40 + (ma->ch % 4) * 0x18 + bcnt, ma->blockset[bcnt]);
 	}
 }
 

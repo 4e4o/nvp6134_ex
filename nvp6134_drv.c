@@ -225,7 +225,10 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	unsigned char i;
 	unsigned long ptz_ch;
 	nvp6134_opt_mode optmode;
-	unsigned int sens[16];
+	nvp6134_motion_area motion_area;
+	nvp6134_motion_sens motion_sens;
+	unsigned int motion_data;
+	unsigned int motion_channel;
 	nvp6134_video_mode vmode;
 	nvp6134_chn_mode schnmode;
 	nvp6134_video_adjust v_adj;
@@ -611,24 +614,40 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_ENABLE_MOTION:
+			if(copy_from_user(&motion_channel, argp, sizeof(motion_channel))) return -1;
+			down(&nvp6134_lock);
+			nvp6134_motion_init(motion_channel, 1);
+			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_DISABLE_MOTION:
+			if(copy_from_user(&motion_channel, argp, sizeof(motion_channel))) return -1;
+			down(&nvp6134_lock);
+			nvp6134_motion_init(motion_channel, 0);
+			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_SET_MOTION_AREA:
+			if(copy_from_user(&motion_area, argp, sizeof(motion_area))) return -1;
+			down(&nvp6134_lock);
+			nvp6134_motion_area_mask(&motion_area);
+			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_GET_MOTION_INFO:
-			nvp6134_get_motion_ch();
+			down(&nvp6134_lock);
+			motion_data = nvp6134_get_motion_ch();
+			up(&nvp6134_lock);
+			if(copy_to_user(argp, &motion_data, sizeof(motion_data)))
+				printk("IOC_VDEC_GET_MOTION_INFO error\n");
 			break;
 		case IOC_VDEC_SET_MOTION_DISPLAY:
-            if(copy_from_user(&on, argp, sizeof(unsigned int))) return -1;
+			if(copy_from_user(&on, argp, sizeof(unsigned int))) return -1;
 			down(&nvp6134_lock);
-			nvp6134_motion_display(0,on);
+			nvp6134_motion_display(0, on);
 			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_SET_MOTION_SENS:
-            if(copy_from_user(&sens, argp, sizeof(unsigned int)*16)) return -1;
+			if(copy_from_user(&motion_sens, argp, sizeof(motion_sens))) return -1;
 			down(&nvp6134_lock);
-			nvp6134_motion_sensitivity(sens);
+			nvp6134_motion_sensitivity(&motion_sens);
 			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_VIDEO_FMT_RESET:

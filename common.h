@@ -260,12 +260,6 @@ typedef struct _nvp6134_video_adjust
 	unsigned int value;
 }nvp6134_video_adjust;
 
-typedef struct _nvp6134_motion_area
-{
-    unsigned char ch;
-    int m_info[12];
-}nvp6134_motion_area;
-
 typedef struct _nvp6134_audio_playback
 {
     unsigned int chip;

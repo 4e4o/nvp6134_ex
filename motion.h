@@ -15,6 +15,8 @@
 #ifndef _MOTION_H_
 #define _MOTION_H_
 
+#include <linux/types.h>
+
 /********************************************************************
  *  define and enum
  ********************************************************************/
@@ -22,6 +24,15 @@
 /********************************************************************
  *  structure
  ********************************************************************/
+typedef struct _nvp6134_motion_area_ {
+    u_int8_t ch;
+    u_int8_t blockset[24];
+} nvp6134_motion_area;
+
+typedef struct _nvp6134_motion_sens_ {
+    u_int8_t ch;
+    u_int8_t sens;
+} nvp6134_motion_sens;
 
 /********************************************************************
  *  external api
@@ -29,7 +40,7 @@
 extern void nvp6134_motion_init(unsigned char ch, unsigned char onoff);
 extern unsigned int nvp6134_get_motion_ch(void);
 extern void nvp6134_motion_display(unsigned char ch, unsigned char onoff);
-extern void nvp6134_motion_sensitivity(unsigned int sens[16]);
-extern void nvp6134_motion_area_mask(unsigned char ch, unsigned int *blockset);
+extern void nvp6134_motion_sensitivity(nvp6134_motion_sens*);
+extern void nvp6134_motion_area_mask(nvp6134_motion_area* ma);
 
 #endif	// end of _MOTION_H_
