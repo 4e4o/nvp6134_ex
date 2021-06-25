@@ -51,18 +51,21 @@ void nvp6134_motion_init(unsigned char ch, unsigned char onoff)
 }
 
 //获取发生motion的通道
-unsigned int nvp6134_get_motion_ch(void)
+void nvp6134_get_motion_ch(nvp6134_motion_data* data)
 {
 	int i;
-	unsigned int motion=0;
-	
-	for(i=0;i<nvp6134_cnt;i++)
-	{
-		gpio_i2c_write(nvp6134_iic_addr[i], 0xFF, 0x00);
-		motion|=(gpio_i2c_read(nvp6134_iic_addr[i], 0xA9)&0x0F)<<(4*i);
-	}
+	u_int8_t read_register = 0xA9;
 
-	return motion;
+	// hold mode
+	if (data->mode == 1)
+		read_register = 0xB1;
+
+	data->motion = 0;
+
+	for(i = 0 ; i < nvp6134_cnt ; i++) {
+		gpio_i2c_write(nvp6134_iic_addr[i], 0xFF, 0x00);
+		data->motion |= (gpio_i2c_read(nvp6134_iic_addr[i], read_register) & 0x0F) << (4 * i);
+	}
 }
 
 //打开motion pic显示。现场画面会显示马赛克块，用于调试motion，正常使用时候请关闭.

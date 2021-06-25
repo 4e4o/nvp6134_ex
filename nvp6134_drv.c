@@ -227,7 +227,7 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	nvp6134_opt_mode optmode;
 	nvp6134_motion_area motion_area;
 	nvp6134_motion_sens motion_sens;
-	unsigned int motion_data;
+	nvp6134_motion_data motion_data;
 	unsigned int motion_channel;
 	nvp6134_video_mode vmode;
 	nvp6134_chn_mode schnmode;
@@ -632,8 +632,9 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_GET_MOTION_INFO:
+			if(copy_from_user(&motion_data, argp, sizeof(motion_data))) return -1;
 			down(&nvp6134_lock);
-			motion_data = nvp6134_get_motion_ch();
+			nvp6134_get_motion_ch(&motion_data);
 			up(&nvp6134_lock);
 			if(copy_to_user(argp, &motion_data, sizeof(motion_data)))
 				printk("IOC_VDEC_GET_MOTION_INFO error\n");

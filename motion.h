@@ -34,11 +34,16 @@ typedef struct _nvp6134_motion_sens_ {
     u_int8_t sens;
 } nvp6134_motion_sens;
 
+typedef struct _nvp6134_motion_data_ {
+    u_int8_t mode; // 1 - hold , 0 -real time
+    u_int8_t motion;
+} nvp6134_motion_data;
+
 /********************************************************************
  *  external api
  ********************************************************************/
 extern void nvp6134_motion_init(unsigned char ch, unsigned char onoff);
-extern unsigned int nvp6134_get_motion_ch(void);
+extern void nvp6134_get_motion_ch(nvp6134_motion_data*);
 extern void nvp6134_motion_display(unsigned char ch, unsigned char onoff);
 extern void nvp6134_motion_sensitivity(nvp6134_motion_sens*);
 extern void nvp6134_motion_area_mask(nvp6134_motion_area* ma);
