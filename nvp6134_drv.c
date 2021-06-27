@@ -221,13 +221,13 @@ extern nvp6134_equalizer s_eq_type;
 long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	unsigned int __user *argp = (unsigned int __user *)arg;	
-	unsigned int on;
 	unsigned char i;
 	unsigned long ptz_ch;
 	nvp6134_opt_mode optmode;
 	nvp6134_motion_area motion_area;
 	nvp6134_motion_sens motion_sens;
 	nvp6134_motion_data motion_data;
+	nvp6134_motion_display motion_display;
 	unsigned int motion_channel;
 	nvp6134_video_mode vmode;
 	nvp6134_chn_mode schnmode;
@@ -640,9 +640,9 @@ long nvp6134_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 				printk("IOC_VDEC_GET_MOTION_INFO error\n");
 			break;
 		case IOC_VDEC_SET_MOTION_DISPLAY:
-			if(copy_from_user(&on, argp, sizeof(unsigned int))) return -1;
+			if(copy_from_user(&motion_display, argp, sizeof(motion_display))) return -1;
 			down(&nvp6134_lock);
-			nvp6134_motion_display(0, on);
+			nvp6134_motion_set_display(&motion_display);
 			up(&nvp6134_lock);
 			break;
 		case IOC_VDEC_SET_MOTION_SENS:

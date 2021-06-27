@@ -69,13 +69,13 @@ void nvp6134_get_motion_ch(nvp6134_motion_data* data)
 }
 
 //打开motion pic显示。现场画面会显示马赛克块，用于调试motion，正常使用时候请关闭.
-void nvp6134_motion_display(unsigned char ch, unsigned char onoff)
+void nvp6134_motion_set_display(nvp6134_motion_display* data)
 {
 	unsigned char ch_disp = 0;
 	
-	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0xFF, 0x02);
-	ch_disp = gpio_i2c_read(nvp6134_iic_addr[ch/4], 0x00+(ch%4)*0x07);
-	if(onoff == 1)
+	gpio_i2c_write(nvp6134_iic_addr[data->ch / 4], 0xFF, 0x02);
+	ch_disp = gpio_i2c_read(nvp6134_iic_addr[data->ch / 4], 0x00 + (data->ch % 4) * 0x07);
+	if(data->display == 1)
 	{
 		SET_BIT(ch_disp, 2);
 		SET_BIT(ch_disp, 3);
@@ -85,7 +85,7 @@ void nvp6134_motion_display(unsigned char ch, unsigned char onoff)
 		CLE_BIT(ch_disp, 2);
 		CLE_BIT(ch_disp, 3);
 	}
-	gpio_i2c_write(nvp6134_iic_addr[ch/4], 0x00+(ch%4)*0x07, ch_disp);
+	gpio_i2c_write(nvp6134_iic_addr[data->ch / 4], 0x00 + (data->ch % 4) * 0x07, ch_disp);
 }
 
 void nvp6134_motion_sensitivity(nvp6134_motion_sens *sens)
