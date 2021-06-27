@@ -31,11 +31,41 @@ typedef struct _nvp6134_motion_area_ {
 
 typedef struct _nvp6134_motion_sens_ {
     u_int8_t ch;
-    u_int8_t sens;
+    /*
+     *
+     *  MOD_TSEN_x
+     *  : Motion Temporal Sensitivity. ( x = channel number )
+     *  The value ( the sum of the motion block ) bases on which it is determined
+     *  whether motion is generated or not
+     *  ( 0 -> 255 The greater the number, the less sensitive it gets)
+     *
+     */
+    u_int8_t temporal_sens;
+    /*
+     *
+     *  MOD_PSEN_x
+     *  : Motion Pixel Sensitivity. Register that determines how much data input in
+     *  the Motion block is used to search for motion
+     *  ( x = channel number )
+     *  0 : bypass
+     *  1 : 1/2
+     *  2 : 1/4
+     *  3 : 1/8
+     *
+     */
+    u_int8_t pixel_sens;
+
+    /*
+     *
+     * Can't find description.
+     *   ( 0 -> 255 The greater the number, the less sensitive it gets)
+     *
+     */
+    u_int8_t brightness_sens;
 } nvp6134_motion_sens;
 
 typedef struct _nvp6134_motion_data_ {
-    u_int8_t mode; // 1 - hold , 0 -real time
+    u_int8_t mode; // 1 - hold , 0 - real time
     u_int8_t motion;
 } nvp6134_motion_data;
 

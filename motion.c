@@ -92,7 +92,15 @@ void nvp6134_motion_sensitivity(nvp6134_motion_sens *sens)
 {
 	//0x01+(ch%4)*0x07  motion时域敏感度						default 0x60
 	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0xFF, 0x02);
-	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0x01 + (sens->ch % 4) * 0x07, sens->sens);
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0x01 + (sens->ch % 4) * 0x07, sens->temporal_sens);
+
+	//0x02+(ch%4)*0x07  motion空域敏感度						default 0x23
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0xFF, 0x02);
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0x02 + (sens->ch % 4) * 0x07, sens->pixel_sens);
+
+	//0x03+(ch%4)*0x07  motion亮度敏感度，值越大越不灵敏		default 0x00
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0xFF, 0x02);
+	gpio_i2c_write(nvp6134_iic_addr[sens->ch / 4], 0x03 + (sens->ch % 4) * 0x07, sens->brightness_sens);
 }
 
 /*******************************************************************************
